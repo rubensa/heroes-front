@@ -1,0 +1,65 @@
+{
+    "name": "heroes-front",
+    "context": ".",
+    "dockerFile": "Dockerfile",
+ 
+    "appPort": [
+        // Front-end development (Angular server)
+        "0.0.0.0:4200:4200"
+    ],
+ 
+    //"postCreateCommand": "/bin/bash -i -c \"\"",
+ 
+    "extensions": [
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "xyz.local-history"
+    ],
+    "settings": {
+        // Run interactive bash shell in VSCode integrated terminal
+        "terminal.integrated.shellArgs.linux": ["-l"],
+        // Configure VSCodeo
+        // Configure glob patterns for excluding files and folders.
+        "files.exclude": {
+            "**/.classpath": true,
+            "**/.project": true,
+            "**/.settings": true,
+            "**/.factorypath": true,
+            "**/.git": true,
+            "**/.gradle": true,
+            "**/.idea": true,
+            "**/.mvn": true,
+            "**/.svn": true,
+            "**/.hg": true,
+            "**/.DS_Store": true
+        },
+        // Configure glob patterns for excluding files and folders in searches. Inherits all glob patterns from the files.exclude setting.
+        "search.exclude": {
+            "**/node": true,
+            "**/node_modules": true,
+            "**/bower_components": true,
+            "**/build": true,
+            "**/target": true
+        }
+    },
+    "runArgs": [
+        // VSCode server cache
+        "--mount", "type=bind,source=${localWorkspaceFolder}/.vscode-server/bin,target=/home/user/.vscode-server/bin",
+        "--mount", "type=bind,source=${localWorkspaceFolder}/.vscode-server/extensions,target=/home/user/.vscode-server/extensions",
+        // User ssh keys
+        "--mount", "type=bind,source=${env:HOME}/.ssh,target=/home/user/.ssh",
+        // User GIT config
+        "--mount", "type=bind,source=${env:HOME}/.gitconfig,target=/home/user/.gitconfig",
+        // Docker in Docker
+        "--mount", "type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock",
+        "--mount", "type=bind,source=/usr/local/bin/docker,target=/home/user/.local/bin/docker",
+        // cut -d: -f3 < <(getent group docker)
+        "--group-add", "1001",
+        // $(id -u):$(id -g)
+        "-u", "1000:1000",
+        // Timezone
+        "--env=TZ=Europe/Madrid"
+    ],
+    "overrideCommand": false
+}
